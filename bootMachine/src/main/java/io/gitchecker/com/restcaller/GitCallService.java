@@ -19,6 +19,16 @@ public class GitCallService {
     //https://docs.github.com/en/rest/reference/commits
    // https://api.github.com/users/JohnLee305
 
+    //리포지토리 커밋 정보
+    // https://api.github.com/repos/JohnLee305/JohnLee305/commits?per_page=1
+    // http://docs2.lfe.io/v3/repos/statistics/#contributors
+
+    //공개 리포지토리 정보
+    //https://api.github.com/users/JohnLee305/repos
+
+    //내가 원하는 결과에 대한 링크
+    // https://stackoverflow.com/questions/21869795/github-api-retrieve-user-commits
+
    // public GitInfoEntity callGithubUserCommitStatus(){
     public GitInfoEntity callGithubUserCommitStatus(){
         URI uri = UriComponentsBuilder
