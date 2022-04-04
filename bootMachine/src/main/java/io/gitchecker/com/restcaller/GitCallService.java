@@ -29,6 +29,11 @@ public class GitCallService {
     //내가 원하는 결과에 대한 링크
     // https://stackoverflow.com/questions/21869795/github-api-retrieve-user-commits
 
+    //사용자에 대한 리포지토리를 우선 받은 후 해당 리포지토리에 대한 오너의 커밋정보를 받아와서 업데이트 체크 해야함
+    
+
+
+
    // public GitInfoEntity callGithubUserCommitStatus(){
     public GitInfoEntity callGithubUserCommitStatus(){
         URI uri = UriComponentsBuilder
