@@ -50,10 +50,7 @@ public class GitCallService {
                 .build()
                 .toUri();
 
-        System.out.println(uri.toString());
         // uri 주소 생성
-
-
        // RestTemplate에 URI를 String 타입으로 전달하면 내부적으로 인코딩 작업을 수행한다는 점입니다.
         // 한글을 포함하는 경우라면 builder와 RestTemplate에서 이중 인코딩하지 않도록 유의해야 합니다.
         // 반면, URI타입을 반환하는 경우 buider에서 encoding 처리를 해줘야 합니다.
@@ -61,20 +58,19 @@ public class GitCallService {
 
 
         RestTemplate restTemplete = new RestTemplate();
-
-
         ResponseEntity<List<GitInfoEntity>> result = restTemplete.exchange(uri, HttpMethod.GET, null,new ParameterizedTypeReference<List<GitInfoEntity>>() {});
-
         List<GitInfoEntity> infoList = new ArrayList<>();
         infoList.addAll(result.getBody());
-
-        // entity로 데이터를 가져오겠다(Get)~~
-        System.out.println(result.getStatusCode());
-       // System.out.println(result.getBody());
-
-
         return infoList;
-
     }
 
+    public static void main(String[] args) {
+        GitCallService gitCallService = new GitCallService();
+        System.out.println("!!!!");
+        List<GitInfoEntity> repoList =  gitCallService.callGithubUserCommitStatus();
+
+        for (GitInfoEntity gitInfo : repoList){
+            System.out.println(gitInfo.toString());
+        }
+    }
 }
