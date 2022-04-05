@@ -3,6 +3,7 @@ package io.gitchecker.com.restcaller;
 // 여기서는 GitInfoEntity 받아와서 rest 통신해서 다시 건네주는 역할만 해야하고, 얘는 그냥 빈으로 관리해서 싱글톤으로 갖고있는게 맞다.
 
 import io.gitchecker.com.gitCheckManager.entity.GitInfoEntity;
+import io.gitchecker.com.gitCheckManager.entity.RepoCommitInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -42,7 +43,7 @@ public class GitCallService {
    // public GitInfoEntity callGithubUserCommitStatus(){
     public List<GitInfoEntity> callGithubUserCommitStatus(){
         URI uri = UriComponentsBuilder
-                .fromUriString("https://api.github.com") //http://localhost에 호출
+                .fromUriString("https://api.github.com") //깃헙 호출
                 .path("/users/JohnLee305/repos")
                 //.queryParam("name", "steve")  // query parameter가 필요한 경우 이와 같이 사용
                 //.queryParam("age", 10)
@@ -70,7 +71,28 @@ public class GitCallService {
         List<GitInfoEntity> repoList =  gitCallService.callGithubUserCommitStatus();
 
         for (GitInfoEntity gitInfo : repoList){
+            //각각의 리포지토리 커밋 정보 가져오기.
+            URI uri = UriComponentsBuilder
+                    .fromUriString("https://api.github.com") //http://localhost에 호출
+                    .path("/repos/JohnLee305/"+gitInfo.getName()+"/commits")
+                    .queryParam("per_page", "1")  // query parameter가 필요한 경우 이와 같이 사용
+                    //.queryParam("age", 10)
+                    .encode()
+                    .build()
+                    .toUri();
+
+
+            RestTemplate restTemplete = new RestTemplate();
+            //자꾸 오류 나는데 이거 뭔가 더 획기적인 접근방법이 필요한듯... 자바 객체가 아니고 제이슨 오브젝트로 다루는 방법이 필요할거같스므니다...
+            // 젝슨이랑 제이슨 어떻게 쓰는지 다시 한번 찾아보고 일단 연구가 필요한듯.
+            
+            ResponseEntity<List<RepoCommitInfoEntity>> result = restTemplete.exchange(uri, HttpMethod.GET, null,new ParameterizedTypeReference<List<RepoCommitInfoEntity>>() {});
+            List<RepoCommitInfoEntity> infoList = new ArrayList<>();
+            infoList.addAll(result.getBody());
+
+
             System.out.println(gitInfo.toString());
+            System.out.println(infoList.toString());
         }
     }
 }
