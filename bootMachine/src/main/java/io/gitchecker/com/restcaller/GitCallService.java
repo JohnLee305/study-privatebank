@@ -4,12 +4,17 @@ package io.gitchecker.com.restcaller;
 
 import io.gitchecker.com.gitCheckManager.entity.GitInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class GitCallService {
@@ -30,17 +35,17 @@ public class GitCallService {
     // https://stackoverflow.com/questions/21869795/github-api-retrieve-user-commits
 
     //사용자에 대한 리포지토리를 우선 받은 후 해당 리포지토리에 대한 오너의 커밋정보를 받아와서 업데이트 체크 해야함
-    
+
 
 
 
    // public GitInfoEntity callGithubUserCommitStatus(){
-    public GitInfoEntity callGithubUserCommitStatus(){
+    public List<GitInfoEntity> callGithubUserCommitStatus(){
         URI uri = UriComponentsBuilder
-                .fromUriString("http://localhost:9090") //http://localhost에 호출
-                .path("/api/server/hello")
-                .queryParam("name", "steve")  // query parameter가 필요한 경우 이와 같이 사용
-                .queryParam("age", 10)
+                .fromUriString("https://api.github.com") //http://localhost에 호출
+                .path("/users/JohnLee305/repos")
+                //.queryParam("name", "steve")  // query parameter가 필요한 경우 이와 같이 사용
+                //.queryParam("age", 10)
                 .encode()
                 .build()
                 .toUri();
@@ -54,14 +59,22 @@ public class GitCallService {
         // 반면, URI타입을 반환하는 경우 buider에서 encoding 처리를 해줘야 합니다.
         // encode()에 인자 값을 지정하지 않으면 기본적으로 UTF-8로 인코딩 작업을 수행합니다.
 
+
         RestTemplate restTemplete = new RestTemplate();
 
-        ResponseEntity<GitInfoEntity> result = restTemplete.getForEntity(uri, GitInfoEntity.class);
+
+        ResponseEntity<List<GitInfoEntity>> result = restTemplete.exchange(uri, HttpMethod.GET, null,new ParameterizedTypeReference<List<GitInfoEntity>>() {});
+
+        List<GitInfoEntity> infoList = new ArrayList<>();
+        infoList.addAll(result.getBody());
+
         // entity로 데이터를 가져오겠다(Get)~~
         System.out.println(result.getStatusCode());
-        System.out.println(result.getBody());
+       // System.out.println(result.getBody());
 
-        return result.getBody();
+
+        return infoList;
 
     }
+
 }
