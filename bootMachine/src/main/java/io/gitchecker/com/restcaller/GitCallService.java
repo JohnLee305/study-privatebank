@@ -85,7 +85,7 @@ public class GitCallService {
             RestTemplate restTemplete = new RestTemplate();
             //자꾸 오류 나는데 이거 뭔가 더 획기적인 접근방법이 필요한듯... 자바 객체가 아니고 제이슨 오브젝트로 다루는 방법이 필요할거같스므니다...
             // 젝슨이랑 제이슨 어떻게 쓰는지 다시 한번 찾아보고 일단 연구가 필요한듯.
-            
+
             ResponseEntity<List<RepoCommitInfoEntity>> result = restTemplete.exchange(uri, HttpMethod.GET, null,new ParameterizedTypeReference<List<RepoCommitInfoEntity>>() {});
             List<RepoCommitInfoEntity> infoList = new ArrayList<>();
             infoList.addAll(result.getBody());
