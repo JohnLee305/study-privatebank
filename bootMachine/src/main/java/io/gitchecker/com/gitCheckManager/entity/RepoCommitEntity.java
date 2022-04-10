@@ -13,10 +13,8 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 @ToString
-public class RepoCommitInfoEntity {
+public class RepoCommitEntity {
 
-    private String sha;
-    private String node_id;
-    private RepoCommitEntity commit;
+    private RepoAuthorEntity author;
 
 }

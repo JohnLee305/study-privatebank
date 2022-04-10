@@ -62,15 +62,20 @@ public class GitCallService {
         ResponseEntity<List<GitInfoEntity>> result = restTemplete.exchange(uri, HttpMethod.GET, null,new ParameterizedTypeReference<List<GitInfoEntity>>() {});
         List<GitInfoEntity> infoList = new ArrayList<>();
         infoList.addAll(result.getBody());
+
+
+
+
+
         return infoList;
     }
 
     public static void main(String[] args) {
         GitCallService gitCallService = new GitCallService();
-        System.out.println("!!!!");
         List<GitInfoEntity> repoList =  gitCallService.callGithubUserCommitStatus();
 
         for (GitInfoEntity gitInfo : repoList){
+
             //각각의 리포지토리 커밋 정보 가져오기.
             URI uri = UriComponentsBuilder
                     .fromUriString("https://api.github.com") //http://localhost에 호출
@@ -81,7 +86,6 @@ public class GitCallService {
                     .build()
                     .toUri();
 
-
             RestTemplate restTemplete = new RestTemplate();
             //자꾸 오류 나는데 이거 뭔가 더 획기적인 접근방법이 필요한듯... 자바 객체가 아니고 제이슨 오브젝트로 다루는 방법이 필요할거같스므니다...
             // 젝슨이랑 제이슨 어떻게 쓰는지 다시 한번 찾아보고 일단 연구가 필요한듯.
@@ -90,9 +94,7 @@ public class GitCallService {
             List<RepoCommitInfoEntity> infoList = new ArrayList<>();
             infoList.addAll(result.getBody());
 
-
-            System.out.println(gitInfo.toString());
-            System.out.println(infoList.toString());
+            System.out.println(gitInfo.getName()+":"+infoList.get(0).getCommit().getAuthor().getDate());
         }
     }
 }
