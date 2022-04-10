@@ -13,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,32 +23,22 @@ import java.util.Map;
 public class GitCallService {
 
    private static RestTemplate restTemplate;
-   //탐색중
-    //https://docs.github.com/en/rest/reference/commits
-   // https://api.github.com/users/JohnLee305
-
-    //리포지토리 커밋 정보
-    // https://api.github.com/repos/JohnLee305/JohnLee305/commits?per_page=1
-    // http://docs2.lfe.io/v3/repos/statistics/#contributors
-
-    //공개 리포지토리 정보
-    //https://api.github.com/users/JohnLee305/repos
-
     //내가 원하는 결과에 대한 링크
     // https://stackoverflow.com/questions/21869795/github-api-retrieve-user-commits
-
     //사용자에 대한 리포지토리를 우선 받은 후 해당 리포지토리에 대한 오너의 커밋정보를 받아와서 업데이트 체크 해야함
 
+    /**
+     * 사용자 이름으로 만들어진 리포지토리의 모든 최근 커밋 일자를 리턴
+     * @return
+     * 모든 리포지토리의 가장 최근 커밋 일자
+     */
+    public List<String>  callGithubUserCommitDate(){
+        List<String> commitDates = new ArrayList<String>();
 
-
-
-   // public GitInfoEntity callGithubUserCommitStatus(){
-    public List<GitInfoEntity> callGithubUserCommitStatus(){
-        URI uri = UriComponentsBuilder
+        //사용자의 리포지토리 리스트 모두 가지고 오기
+        URI repoUri = UriComponentsBuilder
                 .fromUriString("https://api.github.com") //깃헙 호출
                 .path("/users/JohnLee305/repos")
-                //.queryParam("name", "steve")  // query parameter가 필요한 경우 이와 같이 사용
-                //.queryParam("age", 10)
                 .encode()
                 .build()
                 .toUri();
@@ -57,44 +49,54 @@ public class GitCallService {
         // 반면, URI타입을 반환하는 경우 buider에서 encoding 처리를 해줘야 합니다.
         // encode()에 인자 값을 지정하지 않으면 기본적으로 UTF-8로 인코딩 작업을 수행합니다.
 
-
         RestTemplate restTemplete = new RestTemplate();
-        ResponseEntity<List<GitInfoEntity>> result = restTemplete.exchange(uri, HttpMethod.GET, null,new ParameterizedTypeReference<List<GitInfoEntity>>() {});
-        List<GitInfoEntity> infoList = new ArrayList<>();
-        infoList.addAll(result.getBody());
+        ResponseEntity<List<GitInfoEntity>> result = restTemplete.exchange(repoUri, HttpMethod.GET, null,new ParameterizedTypeReference<List<GitInfoEntity>>() {});
+        List<GitInfoEntity> repoInfoList = new ArrayList<>();
+        repoInfoList.addAll(result.getBody());
 
-
-
-
-
-        return infoList;
-    }
-
-    public static void main(String[] args) {
-        GitCallService gitCallService = new GitCallService();
-        List<GitInfoEntity> repoList =  gitCallService.callGithubUserCommitStatus();
-
-        for (GitInfoEntity gitInfo : repoList){
+        for (GitInfoEntity gitInfo : repoInfoList) {
 
             //각각의 리포지토리 커밋 정보 가져오기.
-            URI uri = UriComponentsBuilder
-                    .fromUriString("https://api.github.com") //http://localhost에 호출
-                    .path("/repos/JohnLee305/"+gitInfo.getName()+"/commits")
+            URI commitUri = UriComponentsBuilder
+                    .fromUriString("https://api.github.com")
+                    .path("/repos/JohnLee305/" + gitInfo.getName() + "/commits")
                     .queryParam("per_page", "1")  // query parameter가 필요한 경우 이와 같이 사용
-                    //.queryParam("age", 10)
                     .encode()
                     .build()
                     .toUri();
 
-            RestTemplate restTemplete = new RestTemplate();
-            //자꾸 오류 나는데 이거 뭔가 더 획기적인 접근방법이 필요한듯... 자바 객체가 아니고 제이슨 오브젝트로 다루는 방법이 필요할거같스므니다...
-            // 젝슨이랑 제이슨 어떻게 쓰는지 다시 한번 찾아보고 일단 연구가 필요한듯.
+            RestTemplate restCommitTemplete = new RestTemplate();
 
-            ResponseEntity<List<RepoCommitInfoEntity>> result = restTemplete.exchange(uri, HttpMethod.GET, null,new ParameterizedTypeReference<List<RepoCommitInfoEntity>>() {});
+            ResponseEntity<List<RepoCommitInfoEntity>> commitResult = restCommitTemplete.exchange(commitUri, HttpMethod.GET, null, new ParameterizedTypeReference<List<RepoCommitInfoEntity>>() {
+            });
             List<RepoCommitInfoEntity> infoList = new ArrayList<>();
-            infoList.addAll(result.getBody());
+            infoList.addAll(commitResult.getBody());
 
-            System.out.println(gitInfo.getName()+":"+infoList.get(0).getCommit().getAuthor().getDate());
+            commitDates.add(infoList.get(0).getCommit().getAuthor().getDate());
         }
+        return commitDates;
+    }
+
+    /**
+     * 오늘 날짜와 비교해서 오늘 커밋 정보가 있는지 확인한다.
+     * @return boolean
+     * TRUE : 오늘 커밋한 이력이 있음
+     * FALSE : 오늘 커밋한 이력이 없음
+     */
+    public boolean isCommitted(List<String> latestCommitDates){
+
+        LocalDate today = LocalDate.now();
+
+        for (String dates : latestCommitDates){
+            LocalDate targetDay = LocalDate.parse(dates, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if(today.isEqual(targetDay)){return true;}
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        GitCallService gitCallService = new GitCallService();
+
+
     }
 }
