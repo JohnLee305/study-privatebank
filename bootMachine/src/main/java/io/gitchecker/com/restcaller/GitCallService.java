@@ -88,7 +88,7 @@ public class GitCallService {
         LocalDate today = LocalDate.now();
 
         for (String dates : latestCommitDates){
-            LocalDate targetDay = LocalDate.parse(dates, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate targetDay = LocalDate.parse(dates.substring(0,10), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if(today.isEqual(targetDay)){return true;}
         }
         return false;
@@ -96,7 +96,9 @@ public class GitCallService {
 
     public static void main(String[] args) {
         GitCallService gitCallService = new GitCallService();
-
+        boolean toDayStatus = gitCallService.isCommitted(gitCallService.callGithubUserCommitDate());
+        System.out.println("오늘 커밋 했나요~? : "+ toDayStatus);
+        //gitCallService.callGithubUserCommitDate();
 
     }
 }
