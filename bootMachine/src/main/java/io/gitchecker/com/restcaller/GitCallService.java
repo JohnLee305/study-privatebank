@@ -22,6 +22,10 @@ import java.util.Map;
 @Component
 public class GitCallService {
 
+    //상수값 도출 : 나중에 properties 정리.
+    final String BASIC_URL = "https://api.github.com";
+    final String USER_NAME = "JohnLee305";
+
    private static RestTemplate restTemplate;
     //내가 원하는 결과에 대한 링크
     // https://stackoverflow.com/questions/21869795/github-api-retrieve-user-commits
@@ -37,8 +41,8 @@ public class GitCallService {
 
         //사용자의 리포지토리 리스트 모두 가지고 오기
         URI repoUri = UriComponentsBuilder
-                .fromUriString("https://api.github.com") //깃헙 호출
-                .path("/users/JohnLee305/repos")
+                .fromUriString(BASIC_URL) //깃헙 호출
+                .path("/users/"+USER_NAME+"/repos")
                 .encode()
                 .build()
                 .toUri();
@@ -58,8 +62,8 @@ public class GitCallService {
 
             //각각의 리포지토리 커밋 정보 가져오기.
             URI commitUri = UriComponentsBuilder
-                    .fromUriString("https://api.github.com")
-                    .path("/repos/JohnLee305/" + gitInfo.getName() + "/commits")
+                    .fromUriString(BASIC_URL)
+                    .path("/repos/"+USER_NAME+"/" + gitInfo.getName() + "/commits")
                     .queryParam("per_page", "1")  // query parameter가 필요한 경우 이와 같이 사용
                     .encode()
                     .build()
@@ -94,11 +98,10 @@ public class GitCallService {
         return false;
     }
 
-    public static void main(String[] args) {
-        GitCallService gitCallService = new GitCallService();
-        boolean toDayStatus = gitCallService.isCommitted(gitCallService.callGithubUserCommitDate());
-        System.out.println("오늘 커밋 했나요~? : "+ toDayStatus);
-        //gitCallService.callGithubUserCommitDate();
-
-    }
+    //public static void main(String[] args) {
+    //    GitCallService gitCallService = new GitCallService();
+    //    boolean toDayStatus = gitCallService.isCommitted(gitCallService.callGithubUserCommitDate());
+    //    System.out.println("오늘 커밋 했나요~? : "+ toDayStatus);
+    //    gitCallService.callGithubUserCommitDate();
+    //}
 }
