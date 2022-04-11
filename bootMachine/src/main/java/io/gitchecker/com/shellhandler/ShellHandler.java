@@ -46,12 +46,9 @@ public class ShellHandler {
         return System.getProperty("os.name").toLowerCase();
     }
 
+    // 쉘 파일 실행
+    public void shellFileExe(){
 
-    public static void main(String[] args) {
-        String filePath = "/Users/leejeonghoon/Desktop/DevStud/hubchecker";
-
-        ShellHandler shellHandler = new ShellHandler();
-        shellHandler.checkOSName();
 
         //OS 이름에 따른 경로 명 변경(profile 분리 필요하다면 확장)
         String shellPath = "./src/main/resources/shellScripts/mac/"; //MAC
@@ -80,6 +77,15 @@ public class ShellHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+    }
+
+    public static void main(String[] args) {
+        String filePath = "/Users/leejeonghoon/Desktop/DevStud/hubchecker";
+
+        ShellHandler shellHandler = new ShellHandler();
+        shellHandler.checkOSName();
 
     }
 
