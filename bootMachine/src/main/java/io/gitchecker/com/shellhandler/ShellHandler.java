@@ -6,6 +6,8 @@ package io.gitchecker.com.shellhandler;
 
 //깃허브 커밋에 대한 순서 :
 
+import java.io.InputStream;
+
 /**
  * 준비물 :
  * - 깃허브 리포지토리에 결석일에 커밋을 때려줄 비공개 리포지토리 생성
@@ -22,8 +24,29 @@ package io.gitchecker.com.shellhandler;
  */
 
 public class ShellHandler {
+    private InputStream inputStream;
+
+
+
+    //실행하는 OS판별
+    // mac os x : 개발
+    // windows : 예외처리
+    // or... else = linux...(sh)
+    public String checkOSName() {
+        boolean isWindows = System.getProperty("os.name")
+                .toLowerCase().startsWith("windows");
+
+        System.out.println("실행환경이 윈도우인가? " + isWindows);
+        System.out.println("그렇다면? "+ System.getProperty("os.name")
+                .toLowerCase());
+        return System.getProperty("os.name")
+                .toLowerCase();
+    }
+
 
     public static void main(String[] args) {
+        ShellHandler shellHandler = new ShellHandler();
+        shellHandler.checkOSName();
 
     }
 
