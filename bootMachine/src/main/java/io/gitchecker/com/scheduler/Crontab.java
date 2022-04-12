@@ -1,6 +1,32 @@
 package io.gitchecker.com.scheduler;
 //TODO : 정해진 시간에 뭔가를 해줄 구조 필요
 
+import io.gitchecker.com.scheduler.jobs.CommitCheckJob;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 public class Crontab {
+
+    //쿼츠 크론탭으로 정해진 시간에 job 실행
+    public static void main(String[] args) throws SchedulerException, InterruptedException {
+        // TODO Auto-generated method stub
+        //JobDataMap은 Quartz에서 실행되는 Job에 Key-value 형식으로 값을 전달할수 있다.
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("jobName", "CommitCheckJob");
+        JobDetail jobDetail = newJob(CommitCheckJob.class) //job Data 주입
+                .usingJobData(jobDataMap)
+                .build();
+        Trigger trigger = newTrigger()
+                .withSchedule(cronSchedule("5 * * * * ?")) // 0 15 20 ? * * (매일 오후 8시 15분)
+                .build();// 스케줄러 실행 및 JobDetail과 Trigger 정보로 스케줄링
+
+        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+        scheduler.start();
+        scheduler.scheduleJob(jobDetail, trigger);
+    }
 
 }

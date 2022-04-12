@@ -81,13 +81,13 @@ public class ShellHandler {
 
     }
 
-    public static void main(String[] args) {
-        String filePath = "/Users/leejeonghoon/Desktop/DevStud/hubchecker";
+//    public static void main(String[] args) {
+//        String filePath = "/Users/leejeonghoon/Desktop/DevStud/hubchecker";
 
-        ShellHandler shellHandler = new ShellHandler();
-        shellHandler.checkOSName();
+//        ShellHandler shellHandler = new ShellHandler();
+//        shellHandler.checkOSName();
 
-    }
+//    }
 
 
 }
