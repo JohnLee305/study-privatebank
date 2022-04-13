@@ -1,5 +1,8 @@
 package io.gitchecker.com.scheduler;
-//TODO : 정해진 시간에 뭔가를 해줄 구조 필요
+// TODO : 정해진 시간에 뭔가를 해줄 구조 필요
+// TODO : Spring boot에 bean 형태로 스케줄러 어떻게 살리는건지 좀 알아봐야함.
+// 스케줄러 작성 후에 미비된 쉘 스크립트 보강 필요...
+// 모바일 서버를 쓸거니까 혹시 Request로도 동작이 가능한 형태가 나오면 아주 좋음.
 
 import io.gitchecker.com.scheduler.jobs.CommitCheckJob;
 import org.quartz.*;
