@@ -7,16 +7,23 @@ package io.gitchecker.com.scheduler;
 import io.gitchecker.com.scheduler.jobs.CommitCheckJob;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-public class Crontab {
+@Component
+public class Crontab {  //쿼츠 크론탭으로 정해진 시간에 job 실행
 
-    //쿼츠 크론탭으로 정해진 시간에 job 실행
-    public static void main(String[] args) throws SchedulerException, InterruptedException {
-        // TODO Auto-generated method stub
+    private SchedulerFactory schedulerFactory;
+    private Scheduler scheduler;
+
+    @PostConstruct
+    public void start() throws SchedulerException{
+
         //JobDataMap은 Quartz에서 실행되는 Job에 Key-value 형식으로 값을 전달할수 있다.
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put("jobName", "CommitCheckJob");
@@ -30,6 +37,13 @@ public class Crontab {
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.start();
         scheduler.scheduleJob(jobDetail, trigger);
+    }
+
+
+
+    public static void main(String[] args) throws SchedulerException, InterruptedException {
+        // TODO Auto-generated method stub
+
     }
 
 }
