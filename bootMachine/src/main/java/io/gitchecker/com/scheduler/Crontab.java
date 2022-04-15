@@ -31,7 +31,7 @@ public class Crontab {  //쿼츠 크론탭으로 정해진 시간에 job 실행
                 .usingJobData(jobDataMap)
                 .build();
         Trigger trigger = newTrigger()
-                .withSchedule(cronSchedule("5 * * * * ?")) // 0 15 20 ? * * (매일 오후 8시 15분)
+                .withSchedule(cronSchedule("10 * * * * ?")) // 0 15 20 ? * * (매일 오후 8시 15분)
                 .build();// 스케줄러 실행 및 JobDetail과 Trigger 정보로 스케줄링
 
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
