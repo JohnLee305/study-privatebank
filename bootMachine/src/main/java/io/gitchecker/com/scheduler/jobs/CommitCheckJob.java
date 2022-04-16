@@ -8,27 +8,25 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CommitCheckJob implements Job {
+public class CommitCheckJob extends QuartzJobBean {
+
+    private GitCheckerService gitCheckerService;
 
     @Autowired
-    GitCheckerService gitCheckerService;
+    public void setGitCheckerService(GitCheckerService gitCheckerService){
+        this.gitCheckerService = gitCheckerService;
+    }
 
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
+    public void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println("## 잡이 실행되었음.");
-        try{
-            gitCheckerService.autoCommitDaily();
-        }catch (NullPointerException ne){
-            log.error("NE!!!!");
-            ne.printStackTrace();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
+        this.gitCheckerService.autoCommitDaily();
 
     }
 }
